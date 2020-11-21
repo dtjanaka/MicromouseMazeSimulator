@@ -4,6 +4,7 @@
 #include "Maze.h"
 #include "MazeDefinitions.h"
 #include "PathFinder.h"
+#include "simpleff.h"
 
 /**
  * Demo of a PathFinder implementation.
@@ -107,7 +108,7 @@ protected:
 };
 
 int main(int argc, char * argv[]) {
-    MazeDefinitions::MazeEncodingName mazeName = MazeDefinitions::MAZE_CAMM_2012;
+    MazeDefinitions::MazeEncodingName mazeName = MazeDefinitions::MAZE_ALL_JAPAN_2011;
     bool pause = false;
 
     // Since Windows does not support getopt directly, we will
@@ -130,9 +131,16 @@ int main(int argc, char * argv[]) {
         }
     }
 
-    LeftWallFollower leftWallFollower(pause);
-    Maze maze(mazeName, &leftWallFollower);
+    //LeftWallFollower leftWallFollower(pause);
+    //Maze maze(mazeName, &leftWallFollower);
+    SimpleFF simp(pause);
+    Maze maze(mazeName, &simp);
+
     std::cout << maze.draw(5) << std::endl << std::endl;
+
+    std::cout << "Hit enter to continue..." << std::endl;
+    std::cin.ignore(10000, '\n');
+    std::cin.clear();
 
     maze.start();
 }
