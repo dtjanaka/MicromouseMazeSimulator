@@ -16,9 +16,11 @@ private:
   struct Coord {
     int x;
     int y;
+    Coord(int x, int y) : x{ x }, y{ y } {}
   };
   int distances[16][16]{ 0 };
   bool walls[16][16][4]{ false }; // [W N E S]
+  int minAccNeighVal(unsigned x, unsigned y);
   void calculateDistances();
   bool isAtCenter(unsigned x, unsigned y) const;
 };

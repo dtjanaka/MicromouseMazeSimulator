@@ -31,7 +31,7 @@ public:
             std::cin.clear();
         }
 
-        std::cout << maze.draw(5) << std::endl << std::endl;
+        std::cout << maze.draw(3) << std::endl << std::endl;
 
         // If we somehow miraculously hit the center
         // of the maze, just terminate and celebrate!
@@ -136,7 +136,7 @@ int main(int argc, char * argv[]) {
     SimpleFF simp(pause);
     Maze maze(mazeName, &simp);
 
-    std::cout << maze.draw(5) << std::endl << std::endl;
+    std::cout << maze.draw(3) << std::endl << std::endl;
 
     std::cout << "Hit enter to continue..." << std::endl;
     std::cin.ignore(10000, '\n');
