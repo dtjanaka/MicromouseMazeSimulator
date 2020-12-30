@@ -1,5 +1,5 @@
 #include <iostream>
-#include <cstdlib>  // atoi
+#include <cstdlib> // atoi
 
 #include "Maze.h"
 #include "MazeDefinitions.h"
@@ -101,14 +101,14 @@ protected:
         }
 
         return  (x == midpoint     && y == midpoint    ) ||
-        (x == midpoint - 1 && y == midpoint    ) ||
-        (x == midpoint     && y == midpoint - 1) ||
-        (x == midpoint - 1 && y == midpoint - 1);
+                (x == midpoint - 1 && y == midpoint    ) ||
+                (x == midpoint     && y == midpoint - 1) ||
+                (x == midpoint - 1 && y == midpoint - 1);
     }
 };
 
 int main(int argc, char * argv[]) {
-    MazeDefinitions::MazeEncodingName mazeName = MazeDefinitions::MAZE_ALL_JAPAN_2011;
+    MazeDefinitions::MazeEncodingName mazeName = (MazeDefinitions::MazeEncodingName)(0); // 0-9
     bool pause = false;
 
     // Since Windows does not support getopt directly, we will
