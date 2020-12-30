@@ -2,6 +2,7 @@
 #include <queue>
 #include <vector>
 #include <algorithm>
+#include <windows.h>
 using namespace std;
 
 #include "simpleff.h"
@@ -12,6 +13,7 @@ void clearScreen();
 
 SimpleFF::SimpleFF(bool shouldPause) : pause(shouldPause) {
   heading = 1;
+  target = Coord();
 }
 
 SimpleFF::~SimpleFF() {
@@ -22,36 +24,68 @@ MouseMovement SimpleFF::nextMovement(unsigned x, unsigned y, const Maze& maze) {
   const bool frontWall = maze.wallInFront();
   const bool leftWall = maze.wallOnLeft();
   const bool rightWall = maze.wallOnRight();
-  
+
   // Pause at each cell if the user requests it.
   // It allows for better viewing on command line.
   if (pause) {
-    std::cout << "Hit enter to continue..." << std::endl;
-    std::cin.ignore(10000, '\n');
-    std::cin.clear();
+    cout << "Hit enter to continue..." << endl;
+    cin.ignore(10000, '\n');
+    cin.clear();
   }
 
   clearScreen();
-  std::cout << maze.draw(5) << std::endl << std::endl;
-  
+  cout << maze.draw(3) << endl << endl;
+  Sleep(100);
+
   // If we somehow miraculously hit the center
   // of the maze, just terminate and celebrate!
-  if (isAtCenter(x, y)) {
+  if (target == Coord(7, 7) && isAtCenter(x, y)) {
     for (int i = 15; i >= 0; i--) {
       for (int j = 0; j < 16; j++)
         cout << distances[j][i] << "\t";
       cout << endl;
     }
+    cout << endl;
 
     for (int i = 15; i >= 0; i--) {
       for (int j = 0; j < 16; j++)
         cout << "[" << walls[j][i][0] << " " << walls[j][i][1] << " " << walls[j][i][2] << " " << walls[j][i][3] << "]" << " ";
       cout << endl;
     }
-    cout << "Success!" << std::endl;
+    cout << endl << "Success!" << endl;
     return Finish;
+    //target = Coord(0, 15);
   }
-  
+
+  /*if (target == Coord(0, 15) && x == 0 && y == 15) {
+    target = Coord(15, 15);
+  }
+
+  if (target == Coord(15, 15) && x == 15 && y == 15) {
+    target = Coord(15, 0);
+  }
+
+  if (target == Coord(15, 0) && x == 15 && y == 0) {
+    target = Coord(0, 0);
+  }
+
+  if (target == Coord(0, 0) && x == 0 && y == 0) {
+    for (int i = 15; i >= 0; i--) {
+      for (int j = 0; j < 16; j++)
+        cout << distances[j][i] << "\t";
+      cout << endl;
+    }
+    cout << endl;
+
+    for (int i = 15; i >= 0; i--) {
+      for (int j = 0; j < 16; j++)
+        cout << "[" << walls[j][i][0] << " " << walls[j][i][1] << " " << walls[j][i][2] << " " << walls[j][i][3] << "]" << " ";
+      cout << endl;
+    }
+    cout << endl << "Success!" << endl;
+    return Finish;
+  }*/
+
   switch (heading) {
   case 0:
     walls[x][y][0] = frontWall;
@@ -89,7 +123,7 @@ MouseMovement SimpleFF::nextMovement(unsigned x, unsigned y, const Maze& maze) {
 
   calculateDistances();
 
-  vector<int> neigh {
+  vector<int> neigh{
     { (x > 0) ? distances[x - 1][y] : INT_MAX },
     { (y < 15) ? distances[x][y + 1] : INT_MAX },
     { (x < 15) ? distances[x + 1][y] : INT_MAX },
@@ -119,7 +153,8 @@ MouseMovement SimpleFF::nextMovement(unsigned x, unsigned y, const Maze& maze) {
 
 void SimpleFF::calculateDistances() {
   bool visited[16][16]{ false };
-  Coord start{ 7, 7 };
+  Coord start{ target.x, target.y };
+  distances[target.x][target.y] = 0;
   queue<Coord> tocalc;
   tocalc.push(start);
   while (!tocalc.empty()) {
@@ -128,11 +163,11 @@ void SimpleFF::calculateDistances() {
     visited[c.x][c.y] = true;
     //order: left, up, right, down
     if (c.x > 0 && !walls[c.x][c.y][0] && !visited[c.x - 1][c.y]) {
-      tocalc.push(Coord{ c.x - 1, c.y }); 
-      distances[c.x - 1][c.y] = distances[c.x][c.y] + 1;  
+      tocalc.push(Coord{ c.x - 1, c.y });
+      distances[c.x - 1][c.y] = distances[c.x][c.y] + 1;
     }
     if (c.y < 15 && !walls[c.x][c.y][1] && !visited[c.x][c.y + 1]) {
-      tocalc.push(Coord{ c.x, c.y + 1 }); 
+      tocalc.push(Coord{ c.x, c.y + 1 });
       distances[c.x][c.y + 1] = distances[c.x][c.y] + 1;
     }
     if (c.x < 15 && !walls[c.x][c.y][2] && !visited[c.x + 1][c.y]) {
@@ -153,10 +188,10 @@ bool SimpleFF::isAtCenter(unsigned x, unsigned y) const {
     return x == midpoint && y == midpoint;
   }
 
-  return  (x == midpoint && y == midpoint) ||
-    (x == midpoint - 1 && y == midpoint) ||
-    (x == midpoint && y == midpoint - 1) ||
-    (x == midpoint - 1 && y == midpoint - 1);
+  return (x == midpoint && y == midpoint) ||
+         (x == midpoint - 1 && y == midpoint) ||
+         (x == midpoint && y == midpoint - 1) ||
+         (x == midpoint - 1 && y == midpoint - 1);
 }
 
 ///////////////////////////////////////////////////////////////////////////
